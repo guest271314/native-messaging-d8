@@ -9,7 +9,7 @@ Installation and usage on Chrome and Chromium
 5. Note the generated extension ID.
 6. Open `nm_d8.json` in a text editor, set `"path"` to absolute path of `nm_d8.js` and `chrome-extension://<ID>/` using ID from 5 in `"allowed_origins"` array. 
 7. Copy the file to Chrome or Chromium configuration folder, e.g., Chromium on \*nix `~/.config/chromium/NativeMessagingHosts`; Chrome dev channel on \*nix `~/.config/google-chrome-unstable/NativeMessagingHosts`; and similar for Chrome For Testing.
-8. Make sure `nm_d8.js` and the included Bash script `getNativeMessage.sh` (see Notes) is executable. To download V8 using [`jsvu`](https://github.com/GoogleChromeLabs/jsvu)
+8. Make sure `nm_d8.js` and the included Bash script `getNativeMessage.sh` (see [Notes](https://github.com/guest271314/native-messaging-d8#notes)) is executable. To download V8 using [`jsvu`](https://github.com/GoogleChromeLabs/jsvu)
 
 ```
 bun install jsvu

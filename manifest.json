@@ -1,0 +1,19 @@
+{
+    "name": "nm-d8",
+    "short_name": "nm_d8",
+    "version": "1.0",
+    "manifest_version": 3,
+    "description": "d8 Native Messaging host",
+    "permissions": [
+      "nativeMessaging"
+    ],
+    "host_permissions": [
+      "<all_urls>"
+    ],
+    "background": {
+      "service_worker": "background.js",
+      "type": "module"
+    },
+    "action": {},
+    "homepage_url": "https://github.com/guest271314/native-messaging-d8"
+  }

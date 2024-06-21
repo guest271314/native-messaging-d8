@@ -1,0 +1,7 @@
+{
+    "name": "nm_d8",
+    "description": "d8 Native Messaging Host",
+    "path": "",
+    "type": "stdio",
+    "allowed_origins": []
+  }

@@ -24,7 +24,7 @@ and use the appropriate path to the `v8` executable
 
 ### Notes
 
-[d8](https://v8.dev/docs/d8) does not expect to be used as a Native Messaging host. 
+[d8](https://v8.dev/docs/d8) ("V8’s own developer shell") does not expect to be used as a Native Messaging host. 
 
 Standard input and standard output are not specified by ECMA-262. 
 

@@ -8,8 +8,10 @@ set -o posix
 
 getNativeMessage() {
   # https://lists.gnu.org/archive/html/help-bash/2023-06/msg00036.html
-  length=$(dd iflag=fullblock bs=4 count=1 if=/proc/$@/fd/0 | od -An -td4)
-  message=$(dd iflag=fullblock bs=$((length)) count=1 if=/proc/$@/fd/0)
+  length=$(dd iflag=fullblock oflag=nocache conv=notrunc,fdatasync bs=4 count=1 if=/proc/$@/fd/0 | od -An -td4 -)
+  message=$(dd iflag=fullblock oflag=nocache conv=notrunc,fdatasync bs=$((length)) count=1 if=/proc/$@/fd/0)
+  # length=$(head -q -z --bytes=4 /proc/$@/fd/0 | od -An -td4 -)
+  # message=$(head -q -z --bytes=$((length)) /proc/$@/fd/0)
   echo "$message" 
 }
 

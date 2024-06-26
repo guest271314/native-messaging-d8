@@ -62,10 +62,18 @@ function encodeMessage(str) {
   
   function main() {
     // Get PID of current process
-    const pid = (os.system("pgrep", ["-n", "-f", os.d8Path])).replace(/\D+/g, "");
+    const pid = os.system("pgrep", ["-n", "-f", os.d8Path]);
+    // Get PPID of current process
+    const ppid = os.system("ps", ["-o", "ppid=", "-p", JSON.parse(pid)]);
     while (true) {
-      const message = getMessage(pid);
-      sendMessage(message);
+      // Terminate current process when chrome processes close
+      if (!(os.system("pgrep", ["-P", JSON.parse(ppid)]))) {
+        break;
+      }
+      const message = getMessage(pid, reads++);
+      if (message) {
+        sendMessage(message);
+      }
     }
   }
   

@@ -33,6 +33,8 @@ V8 maintainers do not currently appear to be interested in extending `d8` capabi
 We work around this in the `d8` shell by using [`os.system()`](https://source.chromium.org/chromium/chromium/src/+/main:v8/src/d8/d8.h;l=647) with [`pgrep`](https://man7.org/linux/man-pages/man1/pgrep.1.html) command to get the PID of the current process, then 
 [`dd`](https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation) command to read `/proc/$@/fd/0`, then echo the STDIN to the current `d8` process to `d8`. 
 
+In `quickjs-stdin-read` branch we use QuickJS to read `stdin` to `d8`, then send the read `stdin` to `d8`.
+
 ### Compatibility
 
 For differences between OS and browser implementations see [Chrome incompatibilities](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities#native_messaging).

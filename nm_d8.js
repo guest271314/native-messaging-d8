@@ -11,27 +11,45 @@ function encodeMessage(str) {
       // readline() doesn't read past the Uint32Array equivalent message length
       // V8 authors are not interested in reading STDIN to an ArrayBuffer in d8
       // https://groups.google.com/g/v8-users/c/NsnStT6bx3Y/m/Yr_Z1FwgAQAJ
-      // Use dd to get message length and return message from Bash script
-      // getNativeMessage.sh
-      // #!/bin/bash
-      // # Bash Native Messaging host
-      // # Read STDIN for V8's d8 shell, return message to d8
-      // # guest271314 2024
-      // set -x
-      // set -o posix
-      //
-      // getNativeMessage() {
-      //  # https://lists.gnu.org/archive/html/help-bash/2023-06/msg00036.html
-      //  length=$(dd iflag=fullblock oflag=nocache conv=notrunc,fdatasync bs=4 count=1 if=/proc/$@/fd/0 | od -An -td4 -)
-      //  message=$(dd iflag=fullblock oflag=nocache conv=notrunc,fdatasync bs=$((length)) count=1 if=/proc/$@/fd/0)
-      //  # GNU Coreutils head https://www.gnu.org/software/coreutils/manual/html_node/head-invocation.html
-      //  # length=$(head -q -z --bytes=4 /proc/$@/fd/0 | od -An -td4 -)
-      //  # message=$(head -q -z --bytes=$((length)) /proc/$@/fd/0)
-      //  echo "$message" 
+      // Use QuickJS to get message length and return message from Bash script
+      // #!/usr/bin/env -S /home/user/bin/qjs -m --std
+      // Read stdin to V8's d8, send to d8
+      // const stdin = os.system("./read_d8_stdin.js", [`/proc/${pid.replace(/\D+/g, "")}/fd/0`]);
+      // function read_d8_stdin([, path] = scriptArgs) {
+      //  try {
+      //    const size = new Uint32Array(1);
+      //    const err = { errno: 0 };
+      //    const pipe = std.open(
+      //      path,
+      //      "rb",
+      //      err,
+      //    );
+      //    if (err.errno !== 0) {
+      //      throw `${std.strerror(err.errno)}: ${path}`;
+      //    }
+      //    pipe.read(size.buffer, 0, 4);
+      //    const output = new Uint8Array(size[0]);
+      //    pipe.read(output.buffer, 0, output.length);
+      //    std.out.write(output.buffer, 0, output.length);
+      //    std.out.flush();
+      //    std.exit(0);
+      // } catch (e) {
+      //     const err = { errno: 0 };
+      //     const file = std.open("qjsErr.txt", "w", err);
+      //     if (err.errno !== 0) {
+      //       file.puts(JSON.stringify(err));
+      //       file.close();
+      //       std.exit(1);
+      //     }
+      //     file.puts(JSON.stringify(e));
+      //     file.close();
+      //     std.out.puts(JSON.stringify(err));
+      //     std.exit(1);
+      //   }
       // }
       //
-      // getNativeMessage "$1"
-      const stdin = (os.system("./getNativeMessage.sh", [pid])).trim();
+      // read_d8_stdin();
+      const stdin = os.system("./read_d8_stdin.js", [`/proc/${pid.replace(/\D+/g, "")}/fd/0`]);
       if (stdin != undefined && stdin != null && stdin.length) {
         const message = encodeMessage(stdin.trim());
         // https://stackoverflow.com/a/58288413
@@ -46,11 +64,13 @@ function encodeMessage(str) {
         // ]);
         // writeFile("messageLength.txt", encodeMessage(JSON.stringify(header)));
         return encodeMessage(stdin);
-     } else {
-       return;
-     }
+     } 
+     throw stdin;
     } catch (e) {
-      writeFile("getMessageError.txt", encodeMessage(e.message));
+      const err = encodeMessage(JSON.stringify(`${e.message.slice(0, 26)}: ${read("qjsErr.txt").slice(1, -1)}`));
+      sendMessage(err); 
+      writeFile("err.txt", err);
+      quit(1);
     }
   }
   

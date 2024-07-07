@@ -25,7 +25,7 @@ function read_d8_stdin([, path] = scriptArgs) {
     pipe.read(output.buffer, 0, output.length);
     // Uint8Array containing Uint32Array buffer in Uint8Array and Uint8Array containing message
     const data = new Uint8Array([...new Uint8Array(size.buffer), ...output]);
-    // Write to d8's stdin
+    // Write Uint8Array to d8's stdin
     std.out.write(data.buffer, 0, data.length);
     std.out.flush();
     // Exit and start again initiated from d8

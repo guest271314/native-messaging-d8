@@ -25,7 +25,7 @@ and use the appropriate path to the `v8` executable
 #!/usr/bin/env -S /home/user/.jsvu/engines/v8/v8
 ```
 ```
-#!/usr/bin/env -S /home/user/.esvu/bin/v8
+#!/usr/bin/env -S /home/user/.esvu/engines/v8/d8
 ```
 
 9. To test click `service worker` link in panel of unpacked extension which is DevTools for background.js in MV3 `ServiceWorker`, observe echo'ed message from `d8` Native Messaging host. The communication mechanism can be extended to run V8 via `d8` from any arbitrary Web page using various means, including, but not limited to utilizing `"externally_connectable"` to message to and from the `ServiceWorker` on specific Web pages over IPC; `"web_accessible_resources"` to append an extension `iframe` to any document and use `postMessage()` to transfer messages between browsing contexts; an offscreen document or side-panel document to connect to the host and transfer messages back and forth to the arbitrary Web page in the browser, et al.

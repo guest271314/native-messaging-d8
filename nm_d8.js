@@ -12,27 +12,18 @@ function getMessage(pid) {
     // readline() doesn't read past the Uint32Array equivalent message length
     // V8 authors are not interested in reading STDIN to an ArrayBuffer in d8
     // https://groups.google.com/g/v8-users/c/NsnStT6bx3Y/m/Yr_Z1FwgAQAJ
-    // Use dd to get message length and return message from Bash script
-    // getNativeMessage.sh
-    // #!/bin/bash
-    // # Bash Native Messaging host
-    // # Read STDIN for V8's d8 shell, return message to d8
-    // # guest271314 2024
-    // set -x
-    // set -o posix
-    //
-    // getNativeMessage() {
-    //  # https://lists.gnu.org/archive/html/help-bash/2023-06/msg00036.html
-    //  length=$(dd iflag=fullblock oflag=nocache conv=notrunc,fdatasync bs=4 count=1 if=/proc/$@/fd/0 | od -An -td4 -)
-    //  message=$(dd iflag=fullblock oflag=nocache conv=notrunc,fdatasync bs=$((length)) count=1 if=/proc/$@/fd/0)
-    //  # GNU Coreutils head https://www.gnu.org/software/coreutils/manual/html_node/head-invocation.html
-    //  # length=$(head -q -z --bytes=4 /proc/$@/fd/0 | od -An -td4 -)
-    //  # message=$(head -q -z --bytes=$((length)) /proc/$@/fd/0)
-    //  echo "$message"
-    // }
-    //
-    // getNativeMessage "$1"
-    const stdin = (os.system("./getNativeMessage.sh", [pid])).trim();
+    // Use dd https://pubs.opengroup.org/onlinepubs/9699919799/utilities/dd.html
+    // or GNU Coreutils head https://www.gnu.org/software/coreutils/manual/html_node/head-invocation.html
+    // # length=$(head -q -z --bytes=4 /proc/${pid}/fd/0 | od -An -td4 -)
+    // # message=$(head -q -z --bytes=$((length)) /proc/${pid}/fd/0)
+    // to get message length and return message from Bash script
+    const stdin = (os.system("bash", [
+      "-c",
+      `
+  length=$(dd iflag=fullblock oflag=nocache conv=notrunc,fdatasync bs=4 count=1 if=/proc/${pid}/fd/0 | od -An -td4 -)
+  message=$(dd iflag=fullblock oflag=nocache conv=notrunc,fdatasync bs=$((length)) count=1 if=/proc/${pid}/fd/0)
+  echo "$message"`,
+    ])).trim();
     if (stdin != undefined && stdin != null && stdin.length) {
       const message = encodeMessage(stdin.trim());
       // https://stackoverflow.com/a/58288413

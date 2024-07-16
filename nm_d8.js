@@ -18,6 +18,7 @@ function getMessage(pid) {
     // # message=$(head -q -z --bytes=$((length)) /proc/${pid}/fd/0)
     // to get message length and return message from Bash script
     const stdin = (os.system("bash", [
+      "--posix",
       "-c",
       `
   length=$(dd iflag=fullblock oflag=nocache conv=notrunc,fdatasync bs=4 count=1 if=/proc/${pid}/fd/0 | od -An -td4 -)

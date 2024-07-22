@@ -39,7 +39,7 @@ Standard input and standard output are not specified by ECMA-262.
 V8 maintainers do not currently appear to be interested in extending `d8` capabilities, or the idea of standardizing reading STDIN for JavaScript. See [Implement reading STDIN to an ArrayBuffer. Precedent: `writeFile("/proc/self/fd/1")`](https://groups.google.com/g/v8-users/c/NsnStT6bx3Y/m/Yr_Z1FwgAQAJ)
 
 We work around this in the `d8` shell by using [`os.system()`](https://source.chromium.org/chromium/chromium/src/+/main:v8/src/d8/d8.h;l=647) with [`pgrep`](https://man7.org/linux/man-pages/man1/pgrep.1.html) command to get the PID of the current process, then 
-[`dd`](https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation) command to read `/proc/$@/fd/0`, then echo the STDIN to the current `d8` process to `d8`. 
+[`dd`](https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation) command or [QuickJS](https://bellard.org/quickjs/quickjs.html) to read `/proc/$@/fd/0`, then echo the STDIN to the current `d8` process to `d8`. 
 
 ### Compatibility
 

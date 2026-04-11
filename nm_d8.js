@@ -215,7 +215,7 @@ printf "$message"
       pid,
       bash,
     );
-    if (message) {#!/usr/bin/env -S /home/user/.jsvu/engines/v8/v8 --enable-os-system --module
+    if (message) {
       path,
       "rb",
       err,
